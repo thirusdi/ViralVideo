@@ -1,0 +1,166 @@
+<md-content layout="row" layout-align="center center" class="bg" flex layout-padding md-scroll-y layout-fill>
+	<div class="relative">
+		<div layout="row">
+			<!--            ng-if="showelement"-->
+			<div class="column" ng-if="showelement">
+				<div ng-model="handshow" class="video-list">
+					<md-list class="no-padder">
+						<!--						ng-init="vid = videList"-->
+						<md-list-item class="md-2-line space border-b" ng-repeat="list in videos" ng-click="onlistselected(list,$index)" ng-class="{selected: $index == selectedindex}">
+							<img src="{{list.image}}" class="list-img">
+							<div class="md-list-item-text list-f" layout="column" style="margin:12px !important;">
+								<h4 style="color: #98a6ad;"><i class="fa fa-clock-o"></i>  &nbsp;{{list.duration}} </h4>
+								<h4>{{list.desc}}</h4>
+								<h4>{{list.Writer}}</h4>
+								<h4 style="display:none;">{{list.videoName}}</h4>
+							</div>
+						</md-list-item>
+					</md-list>
+					<div ng-if="videonotfound" class="relative h">
+						<div class="video-recordList">No video found!</div>
+					</div>
+				</div>
+			</div>
+			<div layout="column" class="relative">
+				<div class="chips-align" style="position: relative;width:640px;">
+					<md-chips readonly="false" ng-model="searchkeys" md-on-remove="clearsearch($chip)" md-transform-chip="search($chip)">
+					</md-chips>
+					<!--					md-on-append="searching($chip)"-->
+					<span class="search-i"><i class="fa fa-search"></i></span>
+				</div>
+				<div>
+					<div class="profile" ng-if="!videonotfound">
+						<video id="videoplayer" ng-init="initplayer()" class="video-w" poster="{{videosrc.image}}">
+							<source src="{{videosrc.src}}" type='video/mp4' />
+							<p class="vjs-no-js">
+								To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>
+						</video>
+
+						<div class="profile-edit editPic" ng-if="showcontrols">
+							<div class="player-controls"></div>
+							<div id="xxx" class="progress-default">
+								<div id="default">
+									<div id="progress"></div>
+									<div id="anchor" class="progress-icon"></div>
+								</div>
+							</div>
+							<div class="white player-t1">{{currenttime}}</div>
+							<div class="white player-t2">{{duration}}</div>
+							<div class="white player-volume outline-n">
+								<i class="fa fa-volume-up" ng-if="am" ng-click="mute()"></i>
+								<i class="fa fa-volume-off" ng-if="au" ng-click="unmute()" style="margin-right:11px;"></i>
+								<input class="volume-ajust" type="range" id="volume" ng-if="pb" min="0" ng-model="vol" ng-change="adjustvolumn()" max="1" step="0.1" value="1">
+
+							</div>
+						</div>
+
+						<div class="white player-expand outline-n" ng-click="makefullscreen()"><i class="fa fa-expand"></i></div>
+						<div class="white player-play outline-n" ng-if="showbigplay" ng-click="play() "><i class="fa fa-play-circle"></i></div>
+					</div>
+					<div layout="row" layout-align="space-between center" layout-padding class="video-container" ng-if="!videonotfound">
+						<div>
+							<div class="videoList-i" ng-click="showdiv()">
+								<img src="../../assets/images/list_icon.png">
+							</div>
+							<div class="videoShare-i" ng-click="share($event)">
+								<img src="../../assets/images/share_icon.png">
+							</div>
+						</div>
+						<div>
+							<div class="videoControl-i" ng-click="prev()" ng-style="prevstyle">
+								<img src="../../assets/images/backward_icon.png" style="width: 26px;">
+							</div>
+							<div class="videoControl-i videoPlay-i" ng-if="showplay" id="videoplay" ng-click="play()">
+								<img src="../../assets/images/play_icon.png " style="width: 32px;height:30px " if="play">
+							</div>
+							<div class="videoControl-i videoPlay-i" ng-if="showpause" ng-click="pause()">
+								<img src="../../assets/images/pause.png " style="width: 32px;height:30px;" if="pause">
+							</div>
+							<div class="videoControl-i" ng-click="next()" ng-style="nextstyle">
+								<img src="../../assets/images/forward_icon.png " style="width: 26px;">
+							</div>
+						</div>
+						<div>
+							<div class="videoControl-i" ng-click="like(videosrc)">
+								<img src="../../assets/images/like.png " style="width: 32px;">
+							</div>
+							<div class="videoControlWave-i wave-i">
+								<img src="../../assets/images/wave_icon.png" style="width: 32px;">
+							</div>
+							<div class="videoControl-i" ng-click="dislike(videosrc)">
+								<img src="../../assets/images/unlike.png" style="width: 32px;">
+							</div>
+						</div>
+					</div>
+					<div ng-if="videonotfound" class="video-NotFound">
+						<div class="video-record">No video found!</div>
+					</div>
+				</div>
+				<!--
+                <div>
+                    <div class="profile">
+                        <video id="videoplayer" ng-init="initplayer()" class="video-w" poster="{{videosrc.image}}">
+                            <source src="{{videosrc.src}}" type='video/mp4' />
+                            <p class="vjs-no-js">
+                                To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>
+                        </video>
+
+                        <div class="profile-edit editPic" ng-if="showcontrols">
+                            <div class="player-controls"></div>
+                            <div id="default">
+                                <div id="progress"></div>
+                                <div id="anchor" class="progress-icon"></div>
+                            </div>
+                            <div class="white player-t1">{{currenttime}}</div>
+                            <div class="white player-t2">{{duration}}</div>
+                            <div class="white player-volume outline-n">
+                                <i class="fa fa-volume-up" ng-if="am" ng-click="mute()"></i>
+                                <i class="fa fa-volume-off" ng-if="au" ng-click="unmute()" style="margin-right:11px;"></i>
+                                <input class="volume-ajust" type="range" id="volume" ng-if="pb" min="0" ng-model="vol" ng-change="adjustvolumn()" max="1" step="0.1" value="1">
+
+                            </div>
+                        </div>
+                        <div class="white player-expand outline-n" ng-click="makefullscreen()"><i class="fa fa-expand"></i></div>
+                        <div class="white player-play outline-n" ng-if="showbigplay" ng-click="play() "><i class="fa fa-play-circle"></i></div>
+                    </div>
+                    <div layout="row" layout-align="space-between center" layout-padding class="video-container">
+                        <div>
+                            <div class="videoList-i" ng-click="showdiv()">
+                                <img src="../../assets/images/list_icon.png">
+                            </div>
+                            <div class="videoShare-i" ng-click="share($event)">
+                                <img src="../../assets/images/share_icon.png">
+                            </div>
+                        </div>
+                        <div>
+                            <div class="videoControl-i" ng-click="prev()" ng-style="prevstyle">
+                                <img src="../../assets/images/backward_icon.png" style="width: 26px;">
+                            </div>
+                            <div class="videoControl-i videoPlay-i" ng-if="showplay" id="videoplay" ng-click="play()">
+                                <img src="../../assets/images/play_icon.png " style="width: 32px;height:30px " if="play">
+                            </div>
+                            <div class="videoControl-i videoPlay-i" ng-if="showpause" ng-click="pause()">
+                                <img src="../../assets/images/pause.png " style="width: 32px;height:30px;" if="pause">
+                            </div>
+                            <div class="videoControl-i" ng-click="next()" ng-style="nextstyle">
+                                <img src="../../assets/images/forward_icon.png " style="width: 26px;">
+                            </div>
+                        </div>
+                        <div>
+                            <div class="videoControl-i" ng-click="like(videosrc)">
+                                <img src="../../assets/images/like.png " style="width: 32px;">
+                            </div>
+                            <div class="videoControlWave-i wave-i">
+                                <img src="../../assets/images/wave_icon.png" style="width: 32px;">
+                            </div>
+                            <div class="videoControl-i" ng-click="dislike(videosrc)">
+                                <img src="../../assets/images/unlike.png" style="width: 32px;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+-->
+			</div>
+		</div>
+	</div>
+</md-content>
